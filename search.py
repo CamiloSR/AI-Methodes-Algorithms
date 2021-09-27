@@ -151,25 +151,45 @@ def breadthFirstSearch(problem):
 
     return []
 
-
-
-
-
-
-
-
-
-
-
-
 def uniformCostSearch(problem):
-    """Search the node of least total cost first."""
+   """
+    python pacman.py -l mediumMaze -p SearchAgent -a fn=ucs
+    python pacman.py -l mediumDottedMaze -p StayEastSearchAgent
+    python pacman.py -l mediumScaryMaze -p StayWestSearchAgent
+    """
+    from util import PriorityQueue
 
-    '''
-        INSÉREZ VOTRE SOLUTION À LA QUESTION 3 ICI
-    '''
+    fringe = util.PriorityQueue()
+    visited = []
+    startNode = problem.getStartState()  # (n,n)
+    if problem.isGoalState(startNode):  # Could happen
+        print("Start Node " + startNode + " is the Goal State")
+        return startNode
+    fringe.push((startNode, []), 0)
+    visited.append(startNode)
 
-    util.raiseNotDefined()
+    #input("Press Enter to continue...")
+
+    while not fringe.isEmpty():  # SAME as fringe.isEmpty() == False
+        nodeToVisit = fringe.pop() 
+        node = nodeToVisit[0]
+        actions = nodeToVisit[1]
+        if problem.isGoalState(node):
+            print("The path is...")
+            print(actions)
+            return actions
+        if node not in visited:
+            visited.append(node)
+
+        successors = problem.getSuccessors(node)
+        for successor in successors:
+            sNode = successor[0]
+            sDirection = successor[1]
+            sCost = problem.getCostOfActions(actions + [sDirection])
+            if sNode not in visited:
+                fringe.update((sNode, actions + [sDirection]), sCost)
+
+    return []
 
 
 def nullHeuristic(state, problem=None):
